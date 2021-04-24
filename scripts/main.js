@@ -25,7 +25,7 @@ function show() {
                 <input type="number" min="1" max="10" oninput="inputValue = this.value" />
                 <button>Legg til stolpe</button>
                 <button ${selectedBar ? selectedBar : "disabled"}>Endre valgt stolpe</button><br />
-                <button ${selectedBar ? selectedBar : "disabled"}>Fjerne valgt stolpe</button>
+                <button ${selectedBar ? selectedBar : "disabled"} onClick="removeSelectedBar()">Fjerne valgt stolpe</button>
             `;
 }
 
@@ -58,6 +58,34 @@ function createBar(number, barNo, selected = false) {
 
     return `<rect class="clickable${selected === true ? " selected-item" : ""}" width="${width}" height="${height}" 
                   x="${x}" y="${y}" fill="${color}" barno="${barNo}" onClick="clickedBar(this)"></rect>`;
+}
+
+/**
+ * Removes a given bar, given its bar number.
+ * @param {number} barNo
+ */
+function removeBar(barNo) {
+    // Delete the given barNo from numbers Array.
+    let deletedBarNumber = numbers.splice(barNo - 1, 1);
+    console.log("Removed bar.", deletedBarNumber)
+
+    show();
+}
+
+/**
+ * Removes the currently selected bar.
+ */
+function removeSelectedBar() {
+    if (selectedBar) {
+        removeBar(selectedBar);
+
+        // Clear selection as the previously selected bar is no more.
+        selectedBar = null;
+
+        show();
+    } else {
+        throw new Error("Attempted to remove selected bar when none were selected!");
+    }
 }
 
 function calcColor(min, max, val) {
