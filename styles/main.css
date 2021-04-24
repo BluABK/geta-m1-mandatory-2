@@ -1,0 +1,8 @@
+.clickable {
+    cursor: pointer;
+}
+
+.selected-item {
+    stroke: black;
+    /*stroke-width: 1%;*/
+}
