@@ -24,11 +24,12 @@ function show() {
                 Verdi:
                 <input type="number" min="1" max="10" oninput="inputValue = this.value" />
                 <button>Legg til stolpe</button>
-                <button ${selectedBar ? selectedBar : "disabled"}>Endre valgt stolpe</button><br />
+                <button ${selectedBar ? selectedBar : "disabled"} onClick="changeSelectedBarValue()">Endre valgt stolpe</button><br />
                 <button ${selectedBar ? selectedBar : "disabled"} onClick="removeSelectedBar()">Fjerne valgt stolpe</button>
             `;
 }
 
+// -=CONTROLLER=-
 function clickedBar(bar) {
     let barNo = parseInt(bar.getAttribute("barno"));
 
@@ -43,8 +44,8 @@ function clickedBar(bar) {
 
 /**
  * Create a statistics bar.
- * @param {number} number ?
- * @param {number} barNo ?
+ * @param {Number} number ?
+ * @param {Number} barNo ?
  * @param {boolean} selected Whether the bar should be marked as selected.
  * @returns {String} SVG RECT String of a bar.
  */
@@ -61,19 +62,59 @@ function createBar(number, barNo, selected = false) {
 }
 
 /**
- * Removes a given bar, given its bar number.
- * @param {number} barNo
+ * Change the value of a bar graph element and update view.
+ * @param barNo Bar graph number.
+ * @param value New value to set.
  */
-function removeBar(barNo) {
-    // Delete the given barNo from numbers Array.
-    let deletedBarNumber = numbers.splice(barNo - 1, 1);
-    console.log("Removed bar.", deletedBarNumber)
+function changeBarValue(barNo, value) {
+    // Parse value to integer for use in checks.
+    const parsedValue = parseInt(value);
+
+    if (!isNaN(parsedValue)) {
+        // value is a valid number.
+        numbers[barNo - 1] = parsedValue;
+    } else {
+        throw new Error(`Attempted to change bar value with NaN value! '${value}'`);
+    }
 
     show();
 }
 
 /**
- * Removes the currently selected bar.
+ * Change the value of the selected bar graph element and update view.
+ */
+function changeSelectedBarValue() {
+    if (selectedBar) {
+        const parsedInputValue = parseInt(inputValue);
+
+        if (0 < parsedInputValue && parsedInputValue <= 10) {
+            changeBarValue(selectedBar, inputValue);
+
+            // Clear selection as the previously selected bar is no more.
+            selectedBar = null;
+        } else {
+            alert("Ugyldig verdi! Vennligst oppgi et tall mellom 1 og 10.");
+        }
+
+        show();
+    } else {
+        throw new Error("Attempted to change selected bar value when none were selected!");
+    }
+}
+
+/**
+ * Removes a given bar graph element, given its bar graph number.
+ * @param {Number} barNo Bar graph number.
+ */
+function removeBar(barNo) {
+    // Delete the given barNo from numbers Array.
+    numbers.splice(barNo - 1, 1);
+
+    show();
+}
+
+/**
+ * Removes the currently selected bar graph element and update view.
  */
 function removeSelectedBar() {
     if (selectedBar) {
@@ -88,15 +129,18 @@ function removeSelectedBar() {
     }
 }
 
+/**
+ * Calculate a colour value given certain criteria.
+ * @param {Number} min Minimum percent.
+ * @param {Number} max Maximum percent.
+ * @param {Number} val Value.
+ * @returns {String} HSL Colour string.
+ */
 function calcColor(min, max, val) {
-    let minHue = 240, maxHue = 0;
-    let curPercent = (val - min) / (max - min);
-    let colString = "hsl(" + ((curPercent * (maxHue - minHue)) + minHue) + ",100%,50%)"; //FIXME: Redundant vardecl?
+    const minHue = 240, maxHue = 0;
+    const curPercent = (val - min) / (max - min);
 
-    return colString;
+    return "hsl(" + ((curPercent * (maxHue - minHue)) + minHue) + ",100%,50%)";
 }
-
-// -=CONTROLLER=-
-
 
 show();
