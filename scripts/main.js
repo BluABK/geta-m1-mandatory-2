@@ -29,6 +29,7 @@ function show() {
     `;
 }
 
+// -=CONTROLLER=-
 /**
  * Create a statistics bar.
  * @param {Number} number Initial value to base the bar on.
@@ -137,7 +138,6 @@ function calcColor(min, max, val) {
     return "hsl(" + ((curPercent * (maxHue - minHue)) + minHue) + ",100%,50%)";
 }
 
-// -=CONTROLLER=-
 /**
  * Action to take when a bar graph is clicked on.
  * @param {Number} barNo Bar graph number.
