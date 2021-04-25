@@ -2,7 +2,7 @@
 // Array of numbers to create bar graphs from.
 let numbers = [7, 3, 1, 5, 8];
 // Currently selected bar graph element, if any.
-let selectedBar;
+let chosenBar;
 // Current content of text input field.
 let inputValue;
 
@@ -12,20 +12,20 @@ function show() {
 
     for (let i = 0; i < numbers.length; i++) {
         // Create a bar for each value in numbers Array.
-        svgInnerHtml += createBar(numbers[i], i + 1, selectedBar === i + 1);
+        svgInnerHtml += createBar(numbers[i], i + 1, chosenBar === i + 1);
     }
 
     document.getElementById('content').innerHTML = `
                 <svg id="chart" width="500" viewBox="0 0 80 60">
                     ${svgInnerHtml}
                 </svg><br />
-                Valgt stolpe: <i>${selectedBar ? selectedBar : "ingen"}</i>
+                Valgt stolpe: <i>${chosenBar ? chosenBar : "ingen"}</i>
                 <br />
                 Verdi:
                 <input type="number" min="1" max="10" oninput="inputValue = this.value" />
                 <button>Legg til stolpe</button>
-                <button ${selectedBar ? selectedBar : "disabled"} onClick="changeSelectedBarValue()">Endre valgt stolpe</button><br />
-                <button ${selectedBar ? selectedBar : "disabled"} onClick="removeSelectedBar()">Fjerne valgt stolpe</button>
+                <button ${chosenBar ? chosenBar : "disabled"} onClick="changeSelectedBarValue()">Endre valgt stolpe</button><br />
+                <button ${chosenBar ? chosenBar : "disabled"} onClick="removeSelectedBar()">Fjerne valgt stolpe</button>
             `;
 }
 
@@ -34,15 +34,15 @@ function show() {
  * Action to take when a bar graph is clicked on.
  * @param {Number} barNo Bar graph number.
  */
-function clickedBar(barNo) {
+function chooseBar(barNo) {
     if (typeof(barNo) !== "number") throw new Error(`barNo must be a number! (was: ${typeof(barNo)}).`);
 
-    if (barNo === selectedBar) {
+    if (barNo === chosenBar) {
         // If already selected, deselect it.
-        selectedBar = null;
+        chosenBar = null;
     } else {
         // If not selected, select it.
-        selectedBar = barNo;
+        chosenBar = barNo;
     }
 
     show();
@@ -64,7 +64,7 @@ function createBar(number, barNo, selected = false) {
     let color = calcColor(1, 10, barNo);
 
     return `<rect class="clickable${selected === true ? " selected-item" : ""}" width="${width}" height="${height}" 
-                  x="${x}" y="${y}" fill="${color}" barno="${barNo}" onClick="clickedBar( parseInt(this.attributes.barno.value) )"></rect>`;
+                  x="${x}" y="${y}" fill="${color}" barno="${barNo}" onClick="chooseBar( parseInt(this.attributes.barno.value) )"></rect>`;
 }
 
 /**
@@ -90,14 +90,14 @@ function changeBarValue(barNo, value) {
  * Change the value of the selected bar graph element and update view.
  */
 function changeSelectedBarValue() {
-    if (selectedBar) {
+    if (chosenBar) {
         const parsedInputValue = parseInt(inputValue);
 
         if (0 < parsedInputValue && parsedInputValue <= 10) {
-            changeBarValue(selectedBar, inputValue);
+            changeBarValue(chosenBar, inputValue);
 
             // Clear selection as the previously selected bar is no more.
-            selectedBar = null;
+            chosenBar = null;
         } else {
             alert("Ugyldig verdi! Vennligst oppgi et tall mellom 1 og 10.");
         }
@@ -123,11 +123,11 @@ function removeBar(barNo) {
  * Removes the currently selected bar graph element and update view.
  */
 function removeSelectedBar() {
-    if (selectedBar) {
-        removeBar(selectedBar);
+    if (chosenBar) {
+        removeBar(chosenBar);
 
         // Clear selection as the previously selected bar is no more.
-        selectedBar = null;
+        chosenBar = null;
 
         show();
     } else {
