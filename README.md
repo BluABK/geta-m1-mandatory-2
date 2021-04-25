@@ -1,6 +1,6 @@
-#Obligatorisk oppgave 2
+# Obligatorisk oppgave 2
 
-##Oppgave
+## Oppgave
 
 Oppgaven tar utgangspunkt i koden som er vist nederst på siden. Dette er kode som lager et stolpediagram basert på en liste av tall - hvor hvert tall er mellom 1 og 10. Oppgaven består i å fullføre applikasjonen. Den er skrevet etter Model View Controller-patternet - og koden du legger til skal også være det.
 
