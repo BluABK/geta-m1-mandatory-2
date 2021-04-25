@@ -29,25 +29,6 @@ function show() {
     `;
 }
 
-// -=CONTROLLER=-
-/**
- * Action to take when a bar graph is clicked on.
- * @param {Number} barNo Bar graph number.
- */
-function chooseBar(barNo) {
-    if (typeof(barNo) !== "number") throw new Error(`barNo must be a number! (was: ${typeof(barNo)}).`);
-
-    if (barNo === chosenBar) {
-        // If already selected, deselect it.
-        chosenBar = null;
-    } else {
-        // If not selected, select it.
-        chosenBar = barNo;
-    }
-
-    show();
-}
-
 /**
  * Create a statistics bar.
  * @param {Number} number ?
@@ -64,7 +45,7 @@ function createBar(number, barNo, selected = false) {
     let color = calcColor(1, 10, barNo);
 
     return `<rect class="clickable${selected === true ? " selected-item" : ""}" width="${width}" height="${height}" 
-                  x="${x}" y="${y}" fill="${color}" barno="${barNo}" onClick="chooseBar( parseInt(this.attributes.barno.value) )"></rect>`;
+                  x="${x}" y="${y}" fill="${color}" onClick="chooseBar(${barNo})"></rect>`;
 }
 
 /**
@@ -140,6 +121,25 @@ function calcColor(min, max, val) {
     const curPercent = (val - min) / (max - min);
 
     return "hsl(" + ((curPercent * (maxHue - minHue)) + minHue) + ",100%,50%)";
+}
+
+// -=CONTROLLER=-
+/**
+ * Action to take when a bar graph is clicked on.
+ * @param {Number} barNo Bar graph number.
+ */
+function chooseBar(barNo) {
+    if (typeof(barNo) !== "number") throw new Error(`barNo must be a number! (was: ${typeof(barNo)}).`);
+
+    if (barNo === chosenBar) {
+        // If already selected, deselect it.
+        chosenBar = null;
+    } else {
+        // If not selected, select it.
+        chosenBar = barNo;
+    }
+
+    show();
 }
 
 show();
