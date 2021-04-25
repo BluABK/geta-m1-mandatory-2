@@ -23,7 +23,7 @@ function show() {
         <br />
         Verdi:
         <input type="number" min="1" max="10" oninput="inputValue = this.value" />
-        <button>Legg til stolpe</button>
+        <button onClick="addBar()">Legg til stolpe</button>
         <button ${chosenBar ? chosenBar : "disabled"} onClick="changeSelectedBarValue()">Endre valgt stolpe</button><br />
         <button ${chosenBar ? chosenBar : "disabled"} onClick="removeSelectedBar()">Fjerne valgt stolpe</button>
     `;
@@ -31,8 +31,8 @@ function show() {
 
 /**
  * Create a statistics bar.
- * @param {Number} number ?
- * @param {Number} barNo ?
+ * @param {Number} number Initial value to base the bar on.
+ * @param {Number} barNo Bar numbering to set correct x offset.
  * @param {boolean} selected Whether the bar should be marked as selected.
  * @returns {String} SVG RECT String of a bar.
  */
@@ -73,11 +73,8 @@ function changeSelectedBarValue() {
 
     const parsedInputValue = parseInt(inputValue);
 
-    if (0 < parsedInputValue && parsedInputValue <= 10) {
+    if (1 <= parsedInputValue && parsedInputValue <= 10) {
         changeBarValue(chosenBar, inputValue);
-
-        // Clear selection as the previously selected bar is no more.
-        chosenBar = null;
     } else {
         alert("Ugyldig verdi! Vennligst oppgi et tall mellom 1 og 10.");
     }
@@ -105,6 +102,23 @@ function removeSelectedBar() {
 
     // Clear selection as the previously selected bar is no more.
     chosenBar = null;
+
+    show();
+}
+
+/**
+ * Adds a bar/value read from inputValue, to the end of the numbers Array.
+ */
+function addBar() {
+    const parsedInputValue = parseInt(inputValue);
+
+    if (1 > parsedInputValue || parsedInputValue > 10) {
+        alert("Ugyldig verdi! Vennligst oppgi et tall mellom 1 og 10.");
+        return;
+    }
+
+    // Append bar/value to numbers array.
+    numbers.push(parsedInputValue);
 
     show();
 }
