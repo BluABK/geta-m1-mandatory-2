@@ -30,12 +30,18 @@ function show() {
 }
 
 // -=CONTROLLER=-
-function clickedBar(bar) {
-    let barNo = parseInt(bar.getAttribute("barno"));
+/**
+ * Action to take when a bar graph is clicked on.
+ * @param {Number} barNo Bar graph number.
+ */
+function clickedBar(barNo) {
+    if (typeof(barNo) !== "number") throw new Error(`barNo must be a number! (was: ${typeof(barNo)}).`);
 
     if (barNo === selectedBar) {
+        // If already selected, deselect it.
         selectedBar = null;
     } else {
+        // If not selected, select it.
         selectedBar = barNo;
     }
 
@@ -58,7 +64,7 @@ function createBar(number, barNo, selected = false) {
     let color = calcColor(1, 10, barNo);
 
     return `<rect class="clickable${selected === true ? " selected-item" : ""}" width="${width}" height="${height}" 
-                  x="${x}" y="${y}" fill="${color}" barno="${barNo}" onClick="clickedBar(this)"></rect>`;
+                  x="${x}" y="${y}" fill="${color}" barno="${barNo}" onClick="clickedBar( parseInt(this.attributes.barno.value) )"></rect>`;
 }
 
 /**
