@@ -16,17 +16,17 @@ function show() {
     }
 
     document.getElementById('content').innerHTML = `
-                <svg id="chart" width="500" viewBox="0 0 80 60">
-                    ${svgInnerHtml}
-                </svg><br />
-                Valgt stolpe: <i>${chosenBar ? chosenBar : "ingen"}</i>
-                <br />
-                Verdi:
-                <input type="number" min="1" max="10" oninput="inputValue = this.value" />
-                <button>Legg til stolpe</button>
-                <button ${chosenBar ? chosenBar : "disabled"} onClick="changeSelectedBarValue()">Endre valgt stolpe</button><br />
-                <button ${chosenBar ? chosenBar : "disabled"} onClick="removeSelectedBar()">Fjerne valgt stolpe</button>
-            `;
+        <svg id="chart" width="500" viewBox="0 0 80 60">
+            ${svgInnerHtml}
+        </svg><br />
+        Valgt stolpe: <i>${chosenBar ? chosenBar : "ingen"}</i>
+        <br />
+        Verdi:
+        <input type="number" min="1" max="10" oninput="inputValue = this.value" />
+        <button>Legg til stolpe</button>
+        <button ${chosenBar ? chosenBar : "disabled"} onClick="changeSelectedBarValue()">Endre valgt stolpe</button><br />
+        <button ${chosenBar ? chosenBar : "disabled"} onClick="removeSelectedBar()">Fjerne valgt stolpe</button>
+    `;
 }
 
 // -=CONTROLLER=-
@@ -76,12 +76,10 @@ function changeBarValue(barNo, value) {
     // Parse value to integer for use in checks.
     const parsedValue = parseInt(value);
 
-    if (!isNaN(parsedValue)) {
-        // value is a valid number.
-        numbers[barNo - 1] = parsedValue;
-    } else {
-        throw new Error(`Attempted to change bar value with NaN value! '${value}'`);
-    }
+    if (isNaN(parsedValue)) throw new Error(`Attempted to change bar value with NaN value! '${value}'`);
+
+    // value is a valid number.
+    numbers[barNo - 1] = parsedValue;
 
     show();
 }
@@ -90,22 +88,20 @@ function changeBarValue(barNo, value) {
  * Change the value of the selected bar graph element and update view.
  */
 function changeSelectedBarValue() {
-    if (chosenBar) {
-        const parsedInputValue = parseInt(inputValue);
+    if (!chosenBar) throw new Error("Attempted to change selected bar value when none were selected!");
 
-        if (0 < parsedInputValue && parsedInputValue <= 10) {
-            changeBarValue(chosenBar, inputValue);
+    const parsedInputValue = parseInt(inputValue);
 
-            // Clear selection as the previously selected bar is no more.
-            chosenBar = null;
-        } else {
-            alert("Ugyldig verdi! Vennligst oppgi et tall mellom 1 og 10.");
-        }
+    if (0 < parsedInputValue && parsedInputValue <= 10) {
+        changeBarValue(chosenBar, inputValue);
 
-        show();
+        // Clear selection as the previously selected bar is no more.
+        chosenBar = null;
     } else {
-        throw new Error("Attempted to change selected bar value when none were selected!");
+        alert("Ugyldig verdi! Vennligst oppgi et tall mellom 1 og 10.");
     }
+
+    show();
 }
 
 /**
@@ -123,16 +119,13 @@ function removeBar(barNo) {
  * Removes the currently selected bar graph element and update view.
  */
 function removeSelectedBar() {
-    if (chosenBar) {
-        removeBar(chosenBar);
+    if (!chosenBar) throw new Error("Attempted to remove selected bar when none were selected!");
+    removeBar(chosenBar);
 
-        // Clear selection as the previously selected bar is no more.
-        chosenBar = null;
+    // Clear selection as the previously selected bar is no more.
+    chosenBar = null;
 
-        show();
-    } else {
-        throw new Error("Attempted to remove selected bar when none were selected!");
-    }
+    show();
 }
 
 /**
